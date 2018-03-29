@@ -1,25 +1,25 @@
 #include "route_manager.hpp"
 
 namespace http {
-    namespace server {
-        route_manager::route_manager() {
-        }
+  namespace server {
+    route_manager::route_manager() {
+    }
 
-        void route_manager::register_route(route_index idx, route_fptr func) {
-            if (route_exist(idx))
-                return;
+    void route_manager::route_register(std::string method, std::string path, invoker_function invoker) {
+      if(route_exist(method, path))
+        return;
 
-            map_.insert(std::pair<route_index, route_fptr>(idx, func));
-        }
+      map_.insert(std::pair<std::string, invoker_function>(method + path, invoker));
+    }
 
-        bool route_manager::route_exist(route_index idx) {
-            route_map_it it = map_.find(idx);
-            return (it == map_.end());
-        }
+    bool route_manager::route_exist(std::string method, std::string path) {
+      route_map_it it = map_.find(method + path);
+      return (it == map_.end());
+    }
 
-        route_fptr route_manager::find_route_fptr(route_index idx) {
-            route_map_it it = map_.find(idx);
-            return (it == map_.end()) ? nullptr : it->second;
-        }
-    } // namespace server
+    invoker_function route_manager::find_route_invoker(std::string method, std::string path) {
+      route_map_it it = map_.find(method + path);
+      return (it == map_.end()) ? NULL : it->second;
+    }
+  } // namespace server
 } // namespace http

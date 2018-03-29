@@ -5,7 +5,6 @@
 #include <string>
 #include "connection.hpp"
 #include "connection_manager.hpp"
-#include "route_manager.hpp"
 #include "request_handler.hpp"
 #include "route_manager.hpp"
 
@@ -26,6 +25,8 @@ public:
 
   /// Run the server's io_context loop.
   void run();
+
+  void set_route(const std::string method, const std::string path, invoker_function invoker);
 
 private:
   /// Perform an asynchronous accept operation.
@@ -49,7 +50,6 @@ private:
   /// The handler for all incoming requests.
   request_handler request_handler_;
 
-  //  route manage which process all incoming request;
   route_manager route_manager_;
 };
 

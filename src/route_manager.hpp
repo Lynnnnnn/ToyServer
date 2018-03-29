@@ -7,25 +7,19 @@
 
 namespace http {
     namespace server {
-        struct route_index {
-            std::string method;
-            std::string path;
-        };
-
-        typedef boost::function<void(const request &req, reply &rep)> route_fptr;
-        typedef std::map<route_index, route_fptr> route_map;
-        typedef std::map<route_index, route_fptr>::iterator route_map_it;
-
+        typedef boost::function<void(const request &req, reply &rep)> invoker_function;
+        typedef std::map<std::string, invoker_function> route_map;
+        typedef std::map<std::string, invoker_function>::iterator route_map_it;
 
         class route_manager {
         public:
             route_manager();
 
-            void register_route(route_index idx, route_fptr func);
+            void route_register(std::string method, std::string path, invoker_function invoker);
 
-            bool route_exist(route_index idx);
+            bool route_exist(std::string method, std::string path);
 
-            route_fptr find_route_fptr(route_index idx);
+            invoker_function find_route_invoker(std::string method, std::string path);
 
         private:
             route_map map_;
