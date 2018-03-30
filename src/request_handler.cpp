@@ -10,9 +10,8 @@
 namespace http {
     namespace server {
 
-        request_handler::request_handler(const std::string &doc_root, route_manager & manager)
-                : doc_root_(doc_root),
-                route_manager_(manager) {
+        request_handler::request_handler(const std::string &doc_root)
+                : doc_root_(doc_root) {
         }
 
         void request_handler::handle_request(const request &req, reply &rep) {
@@ -29,17 +28,9 @@ namespace http {
                 return;
             }
 
-            invoker_function invoker = route_manager_.find_route_invoker(req.method, req.uri);
-
-            if (invoker.empty()) {
-                rep = reply::stock_reply(reply::not_found);
-                return;
-            } else {
-                invoker(req, rep);
-            }
 
             // If path ends in slash (i.e. is a directory) then add "index.html".
-            /*if (request_path[request_path.size() - 1] == '/') {
+            if (request_path[request_path.size() - 1] == '/') {
                 request_path += "index.html";
             }
 
@@ -69,7 +60,7 @@ namespace http {
             rep.headers[0].name = "Content-Length";
             rep.headers[0].value = std::to_string(rep.content.size());
             rep.headers[1].name = "Content-Type";
-            rep.headers[1].value = mime_types::extension_to_type(extension);*/
+            rep.headers[1].value = mime_types::extension_to_type(extension);
         }
 
         bool request_handler::url_decode(const std::string &in, std::string &out) {

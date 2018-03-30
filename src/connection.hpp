@@ -5,64 +5,68 @@
 #include "request.hpp"
 #include "request_handler.hpp"
 #include "request_parser.hpp"
+#include "route_manager.hpp"
 #include <array>
 #include <boost/asio.hpp>
 #include <memory>
 
 namespace http {
-  namespace server {
+    namespace server {
 
-    class connection_manager;
+        class connection_manager;
 
-    /// Represents a single connection from a client.
-    class connection
-        : public std::enable_shared_from_this<connection> {
-    public:
-      connection(const connection &) = delete;
-      connection &operator=(const connection &) = delete;
+        /// Represents a single connection from a client.
+        class connection
+                : public std::enable_shared_from_this<connection> {
+        public:
+            connection(const connection &) = delete;
 
-      /// Construct a connection with the given socket.
-      explicit connection(boost::asio::ip::tcp::socket socket,
-                          connection_manager &manager, request_handler &handler);
+            connection &operator=(const connection &) = delete;
 
-      /// Start the first asynchronous operation for the connection.
-      void start();
+            /// Construct a connection with the given socket.
+            explicit connection(boost::asio::ip::tcp::socket socket,
+                                connection_manager &manager, request_handler &handler, route_manager &r_manager);
 
-      /// Stop all asynchronous operations associated with the connection.
-      void stop();
+            /// Start the first asynchronous operation for the connection.
+            void start();
 
-    private:
-      /// Perform an asynchronous read operation.
-      void do_read();
+            /// Stop all asynchronous operations associated with the connection.
+            void stop();
 
-      /// Perform an asynchronous write operation.
-      void do_write();
+        private:
+            /// Perform an asynchronous read operation.
+            void do_read();
 
-      /// Socket for the connection.
-      boost::asio::ip::tcp::socket socket_;
+            /// Perform an asynchronous write operation.
+            void do_write();
 
-      /// The manager for this connection.
-      connection_manager &connection_manager_;
+            /// Socket for the connection.
+            boost::asio::ip::tcp::socket socket_;
 
-      /// The handler used to process the incoming request.
-      request_handler &request_handler_;
+            /// The manager for this connection.
+            connection_manager &connection_manager_;
 
-      /// Buffer for incoming data.
-      std::array<char, 8192> buffer_;
+            route_manager &route_manager_;
 
-      /// The incoming request.
-      request request_;
+            /// The handler used to process the incoming request.
+            request_handler &request_handler_;
 
-      /// The parser for the incoming request.
-      request_parser request_parser_;
+            /// Buffer for incoming data.
+            std::array<char, 8192> buffer_;
 
-      /// The reply to be sent back to the client.
-      reply reply_;
-    };
+            /// The incoming request.
+            request request_;
 
-    typedef std::shared_ptr<connection> connection_ptr;
+            /// The parser for the incoming request.
+            request_parser request_parser_;
 
-  } // namespace server
+            /// The reply to be sent back to the client.
+            reply reply_;
+        };
+
+        typedef std::shared_ptr<connection> connection_ptr;
+
+    } // namespace server
 } // namespace http
 
 #endif // HTTP_CONNECTION_HPP

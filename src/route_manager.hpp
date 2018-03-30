@@ -21,6 +21,8 @@ namespace http {
 
             invoker_function find_route_invoker(std::string method, std::string path);
 
+            void route(const request &req, reply &rep);
+
         private:
             route_map map_;
         };
