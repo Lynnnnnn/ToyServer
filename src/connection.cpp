@@ -33,7 +33,7 @@ namespace http {
                                         if (result == request_parser::good) {
                                           //request_handler_.handle_request(request_, reply_);
                                           route_manager_.route(request_, reply_);
-                                          do_write();
+                                          this->response_back();
                                         } else if (result == request_parser::bad) {
                                           reply_ = reply::stock_reply(reply::bad_request);
                                           do_write();
@@ -61,6 +61,12 @@ namespace http {
                                          connection_manager_.stop(shared_from_this());
                                        }
                                    });
+        }
+
+        void connection::response_back() {
+          reply_.add_header("Content-Length", std::to_string(reply_.content.size()));
+          std::cout << reply_.content << std::endl;
+          do_write();
         }
 
     } // namespace server

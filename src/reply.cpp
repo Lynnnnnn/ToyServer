@@ -1,5 +1,4 @@
 #include "reply.hpp"
-#include <string>
 
 namespace http {
     namespace server {
@@ -232,6 +231,10 @@ namespace http {
           rep.headers[1].name = "Content-Type";
           rep.headers[1].value = "text/html";
           return rep;
+        }
+
+        void reply::add_header(const std::string key, const std::string value) {
+          headers.push_back({key, value});
         }
 
     } // namespace server

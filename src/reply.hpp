@@ -44,6 +44,8 @@ namespace http {
 
             /// Get a stock reply.
             static reply stock_reply(status_type status);
+
+            void add_header(const std::string key, const std::string value);
         };
 
     } // namespace server

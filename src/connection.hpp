@@ -40,6 +40,8 @@ namespace http {
             /// Perform an asynchronous write operation.
             void do_write();
 
+            void response_back();
+
             /// Socket for the connection.
             boost::asio::ip::tcp::socket socket_;
 
